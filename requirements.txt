@@ -17,4 +17,3 @@ joblib>=1.4.0
 scipy>=1.14.0
 statsmodels>=0.14.2
 tqdm>=4.67.0
-great-expectations>=0.20.0

@@ -8,11 +8,15 @@ from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
-import shap
 import logging
 from typing import Tuple, Dict, Any
 import joblib
 from datetime import datetime, timedelta
+
+try:
+    import shap
+except ImportError:
+    shap = None
 
 logger = logging.getLogger(__name__)
 
@@ -188,7 +192,11 @@ class ChurnPredictor:
         self.model.fit(X, y, verbose=False)
         
         # Create SHAP explainer
-        self.explainer = shap.TreeExplainer(self.model)
+        if shap is not None:
+            self.explainer = shap.TreeExplainer(self.model)
+        else:
+            self.explainer = None
+            logger.warning("SHAP is not installed; churn explanations will be unavailable")
         
         logger.info("XGBoost model trained")
         
@@ -203,6 +211,9 @@ class ChurnPredictor:
     
     def explain_prediction(self, X: np.ndarray, sample_idx: int = 0):
         """Get SHAP explanation for a prediction."""
+        if shap is None:
+            raise ImportError("SHAP is not installed")
+
         if self.explainer is None:
             raise ValueError("Explainer not initialized")
         
