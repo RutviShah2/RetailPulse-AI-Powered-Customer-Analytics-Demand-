@@ -11,6 +11,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import os
 import sys
+from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -51,7 +52,9 @@ if 'config' not in st.session_state:
 def load_sample_data():
     """Load sample data for demo."""
     try:
-        df = pd.read_csv("data/cleaned_retail_data.csv")
+        project_root = Path(__file__).resolve().parents[1]
+        data_file = project_root / "data" / "cleaned_retail_data.csv"
+        df = pd.read_csv(data_file)
         df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
         return df
     except:
