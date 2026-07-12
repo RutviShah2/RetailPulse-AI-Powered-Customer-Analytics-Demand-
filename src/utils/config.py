@@ -63,6 +63,10 @@ def load_config(config_path: str = "config.yaml") -> Dict[str, Any]:
         Configuration dictionary
     """
     config_file = Path(config_path)
+
+    if not config_file.is_absolute() and not config_file.exists():
+        repo_root = Path(__file__).resolve().parents[2]
+        config_file = repo_root / config_path
     
     if not config_file.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
